@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Círculo de Quintas</title>
+
+  <!-- PWA / Iconos -->
+  <meta name="theme-color" content="#0f1115"/>
+  <link rel="manifest" href="manifest.json"/>
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png"/>
+  <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png"/>
+  <link rel="apple-touch-icon" href="icons/icon-1024.png"/>
+
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+  <header class="topbar">
+    <h1>🎵 Círculo de Quintas</h1>
+    <div class="controls">
+      <label for="modo">Modo:</label>
+      <select id="modo">
+        <option value="mayor">Mayor</option>
+        <option value="menor">Menor</option>
+      </select>
+
+      <label for="tonalidad">Tonalidad:</label>
+      <select id="tonalidad"></select>
+
+      <span id="menorTipoWrap" class="hidden">
+        <label for="menorTipo">Menor:</label>
+        <select id="menorTipo">
+          <option value="natural">Natural</option>
+          <option value="armonica">Armónica</option>
+        </select>
+      </span>
+    </div>
+  </header>
+
+  <main>
+    <section>
+      <h2>Círculo de Quintas</h2>
+      <div id="circulo" class="circulo"></div>
+    </section>
+
+    <section>
+      <h2>Teclado</h2>
+      <div id="teclado" class="teclado"></div>
+    </section>
+
+    <section>
+      <h2>Acordes de la tonalidad</h2>
+      <div id="acordes" class="acordes"></div>
+    </section>
+
+    <section>
+      <h2>Progresiones</h2>
+      <div id="progresiones" class="progresiones"></div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <small>Funciona 100% offline. Notación en español sin bemoles (solo naturales y #). Instalable como app.</small>
+  </footer>
+
+  <!-- Registrar Service Worker para PWA -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => navigator.serviceWorker.register('service-worker.js'));
+    }
+  </script>
+  <script src="app.js"></script>
+</body>
+</html>
