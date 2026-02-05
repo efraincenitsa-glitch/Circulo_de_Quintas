@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Círculo de Quintas</title>
+<link rel="apple-touch-icon" href="icon-1024.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<style>
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:radial-gradient(circle,#1b1b1b,#000);color:#fff;text-align:center}
+h1{margin:10px 0}
+button{padding:8px 16px;border:none;border-radius:20px;background:#00c8ff;color:#000;font-weight:bold;margin:5px}
+button.active{background:#00ffff}
+#circle{width:300px;height:300px;margin:10px auto;border-radius:50%;position:relative;background:#111}
+.note{position:absolute;width:54px;height:54px;border-radius:50%;background:#00c8ff;display:flex;align-items:center;justify-content:center;font-weight:bold;color:#000}
+#info{margin:10px;padding:12px;background:rgba(0,0,0,.6);border-radius:12px}
+#piano{display:flex;justify-content:center;margin:15px;height:140px}
+.white{width:40px;height:140px;background:#fff;border:1px solid #000;position:relative}
+.black{width:26px;height:90px;background:#000;position:absolute;top:0;right:-13px}
+.white.active{background:#00ffff}
+.black.active{background:#00c8ff}
+</style>
+</head>
+<body>
+<h1>🎵 Círculo de Quintas</h1>
+<div>
+<button id="majorBtn" class="active">Mayor</button>
+<button id="minorBtn">Menor</button>
+</div>
+<div id="circle"></div>
+<div id="info">Selecciona una tonalidad</div>
+<div id="piano"></div>
+<button onclick="saveFavorite()">⭐ Guardar tonalidad</button>
+<div id="favorites"></div>
+<script>
+let mode="major",currentKey=null;
+const data={
+"Do":{major:{scale:["Do","Re","Mi","Fa","Sol","La","Si"],chords:["Do","Fa","Sol"]},
+      minor:{scale:["Do","Re","Mib","Fa","Sol","Lab","Sib"],chords:["Do m","Fa m","Sol m"]}},
+"Sol":{major:{scale:["Sol","La","Si","Do","Re","Mi","Fa#"],chords:["Sol","Do","Re"]},
+       minor:{scale:["Sol","La","Sib","Do","Re","Mib","Fa"],chords:["Sol m","Do m","Re m"]}},
+"Re":{major:{scale:["Re","Mi","Fa#","Sol","La","Si","Do#"],chords:["Re","Sol","La"]},
+      minor:{scale:["Re","Mi","Fa","Sol","La","Sib","Do"],chords:["Re m","Sol m","La m"]}},
+"Fa":{major:{scale:["Fa","Sol","La","Sib","Do","Re","Mi"],chords:["Fa","Sib","Do"]},
+      minor:{scale:["Fa","Sol","Lab","Sib","Do","Reb","Mib"],chords:["Fa m","Sib m","Do m"]}}
+};
+const notes=Object.keys(data);
+const circle=document.getElementById("circle");
+const info=document.getElementById("info");
+const piano=document.getElementById("piano");
+const favoritesDiv=document.getElementById("favorites");
+notes.forEach((n,i)=>{
+ const a=i/notes.length*Math.PI*2,r=120;
+ const d=document.createElement("div");
+ d.className="note";
+ d.style.left=150+r*Math.cos(a)-27+"px";
+ d.style.top=150+r*Math.sin(a)-27+"px";
+ d.textContent=n;
+ d.onclick=()=>selectKey(n);
+ circle.appendChild(d);
+});
+function drawPiano(scale){
+ piano.innerHTML="";
+ ["Do","Re","Mi","Fa","Sol","La","Si"].forEach(w=>{
+  const k=document.createElement("div");k.className="white";
+  if(scale.includes(w))k.classList.add("active");
+  if(["Do","Re","Fa","Sol","La"].includes(w)){
+    const b=document.createElement("div");b.className="black";
+    if(scale.some(n=>n.startsWith(w+"#")||n.startsWith(w+"b")))b.classList.add("active");
+    k.appendChild(b);
+  }
+  piano.appendChild(k);
+ });
+}
+function selectKey(n){
+ currentKey=n;
+ const s=data[n][mode];
+ info.innerHTML=`<strong>${n} ${mode=="major"?"Mayor":"Menor"}</strong><br>
+ Escala: ${s.scale.join(" – ")}<br>
+ I–IV–V: ${s.chords.join(" – ")}`;
+ drawPiano(s.scale);
+}
+function saveFavorite(){
+ if(!currentKey)return;
+ const favs=JSON.parse(localStorage.getItem("favs")||"[]");
+ const id=currentKey+" "+mode;
+ if(!favs.includes(id)){favs.push(id);localStorage.setItem("favs",JSON.stringify(favs));loadFavs();}
+}
+function loadFavs(){
+ favoritesDiv.innerHTML="<h3>⭐ Favoritas</h3>";
+ (JSON.parse(localStorage.getItem("favs")||"[]")).forEach(f=>{
+  const b=document.createElement("button");b.textContent=f;
+  b.onclick=()=>{const[k,m]=f.split(" ");mode=m;selectKey(k)};
+  favoritesDiv.appendChild(b);
+ });
+}
+majorBtn.onclick=()=>{mode="major";majorBtn.classList.add("active");minorBtn.classList.remove("active")};
+minorBtn.onclick=()=>{mode="minor";minorBtn.classList.add("active");majorBtn.classList.remove("active")};
+loadFavs();
+</script>
+</body>
+</html>
