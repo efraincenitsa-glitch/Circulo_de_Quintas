@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Música PRO - Círculo de Quintas</title>
+  <meta name="description" content="Herramienta musical offline: círculo de quintas, escalas, acordes, progresiones, teclado, diapasón, metrónomo, afinador y entrenamiento auditivo." />
+  <meta name="theme-color" content="#0f1115" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png" />
+  <link rel="apple-touch-icon" href="icons/icon-512.png" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="app-icon">🎵</div>
+      <div>
+        <h1>Música PRO</h1>
+        <p>Círculo de quintas, escalas, acordes y práctica</p>
+      </div>
+    </div>
+    <button id="btnInstall" class="btn ghost hidden">Instalar App</button>
+  </header>
+
+  <main class="layout">
+    <aside class="panel controls-panel">
+      <h2>Configuración</h2>
+      <label for="modo">Modo</label>
+      <select id="modo">
+        <option value="mayor">Mayor</option>
+        <option value="menor">Menor</option>
+      </select>
+
+      <label for="tonalidad">Tonalidad</label>
+      <select id="tonalidad"></select>
+
+      <div id="menorTipoWrap" class="hidden">
+        <label for="menorTipo">Tipo de menor</label>
+        <select id="menorTipo">
+          <option value="natural">Natural</option>
+          <option value="armonica">Armónica</option>
+        </select>
+      </div>
+
+      <label for="instrumento">Diapasón</label>
+      <select id="instrumento">
+        <option value="bajo4">Bajo 4 cuerdas</option>
+        <option value="guitarra">Guitarra</option>
+      </select>
+
+      <label for="trastes">Trastes visibles</label>
+      <input id="trastes" type="range" min="5" max="15" value="12" />
+
+      <button id="btnPlayScale" class="btn">▶ Escala</button>
+      <button id="btnPlayChords" class="btn secondary">▶ Acordes</button>
+      <button id="btnStopAudio" class="btn danger">■ Detener audio</button>
+    </aside>
+
+    <section class="content">
+      <section class="hero card">
+        <div class="hero-text">
+          <h2 id="tituloTonalidad">C Mayor</h2>
+          <p id="resumenTonalidad">Selecciona una tonalidad para estudiar notas, acordes y progresiones.</p>
+          <div class="chips" id="chipsNotas"></div>
+        </div>
+        <div class="circle-wrap">
+          <div class="glow"></div>
+          <svg id="circuloSvg" viewBox="-180 -180 360 360" class="circulo-svg" aria-label="Círculo de quintas"></svg>
+        </div>
+      </section>
+
+      <section class="grid two">
+        <section class="card">
+          <div class="section-head">
+            <h2>Teclado</h2>
+            <button id="btnPlayRoot" class="mini-btn">Tónica</button>
+          </div>
+          <div id="teclado" class="teclado"></div>
+          <p class="hint">Las notas de la tonalidad aparecen resaltadas. La tónica se marca con color especial.</p>
+        </section>
+
+        <section class="card">
+          <h2>Información rápida</h2>
+          <div id="infoRapida" class="info-grid"></div>
+        </section>
+      </section>
+
+      <section class="card">
+        <h2>Acordes de la tonalidad</h2>
+        <div id="acordes" class="acordes"></div>
+      </section>
+
+      <section class="card">
+        <h2>Progresiones</h2>
+        <div id="progresiones" class="progresiones"></div>
+        <div class="builder">
+          <h3>Constructor PRO</h3>
+          <p>Escribe grados romanos separados por guion o espacio. Ejemplo: I V vi IV</p>
+          <div class="row">
+            <input id="progresionInput" value="I V vi IV" />
+            <button id="btnConstruir" class="btn">Construir</button>
+            <button id="btnPlayProg" class="btn secondary">▶ Progresión</button>
+          </div>
+          <div id="progresionResultado" class="result"></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Diapasón</h2>
+        <div id="fretboard" class="fretboard"></div>
+      </section>
+
+      <section class="grid two">
+        <section class="card">
+          <h2>Metrónomo</h2>
+          <div class="metronome">
+            <label for="bpm">BPM: <strong id="bpmLabel">90</strong></label>
+            <input id="bpm" type="range" min="40" max="220" value="90" />
+            <div class="row">
+              <button id="btnMetro" class="btn">Iniciar</button>
+              <select id="compas">
+                <option value="4">4/4</option>
+                <option value="3">3/4</option>
+                <option value="2">2/4</option>
+                <option value="6">6/8</option>
+              </select>
+            </div>
+            <div id="beatLights" class="beat-lights"></div>
+          </div>
+        </section>
+
+        <section class="card">
+          <h2>Afinador básico</h2>
+          <p class="hint">Usa el micrófono para detectar una nota aproximada. Funciona mejor con una nota sostenida.</p>
+          <div class="tuner-display">
+            <strong id="tunerNote">--</strong>
+            <span id="tunerHz">0 Hz</span>
+            <small id="tunerCents">Sin señal</small>
+          </div>
+          <button id="btnTuner" class="btn">Activar afinador</button>
+        </section>
+      </section>
+
+      <section class="grid two">
+        <section class="card">
+          <h2>Entrenamiento auditivo</h2>
+          <div class="row">
+            <button id="btnRandomNote" class="btn">Nota aleatoria</button>
+            <button id="btnRandomChord" class="btn secondary">Acorde aleatorio</button>
+          </div>
+          <div id="earResult" class="result locked">Presiona un botón para practicar.</div>
+          <button id="btnReveal" class="mini-btn">Mostrar respuesta</button>
+        </section>
+
+        <section class="card">
+          <h2>Buscador de acordes</h2>
+          <p class="hint">Selecciona notas y detecta acordes mayores, menores, disminuidos, aumentados y séptimas.</p>
+          <div id="notePicker" class="note-picker"></div>
+          <div id="chordFinderResult" class="result">Selecciona 2 o más notas.</div>
+          <button id="btnClearNotes" class="mini-btn">Limpiar notas</button>
+        </section>
+      </section>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <small>App offline instalable. Notación en español sin bemoles: Do, Do#, Re, Re#, Mi, Fa, Fa#, Sol, Sol#, La, La#, Si.</small>
+  </footer>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => navigator.serviceWorker.register('service-worker.js'));
+    }
+  </script>
+  <script src="app.js"></script>
+</body>
+</html>
